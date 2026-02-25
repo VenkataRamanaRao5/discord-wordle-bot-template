@@ -1,9 +1,11 @@
 import { relations } from "drizzle-orm";
+import { float } from "drizzle-orm/mysql-core";
 import { integer, sqliteTable, text, primaryKey } from 'drizzle-orm/sqlite-core';
 
-export const wordlesTable = sqliteTable('wordles', {
+export const horsesTable = sqliteTable('horses', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  gameNumber: integer('game_number').notNull().unique(),
+  dayNumber: integer('day_number').notNull().unique(),
+  optimalScore: integer('optimal_score').notNull(),
 });
 
 export const playersTable = sqliteTable('players', {
@@ -14,12 +16,13 @@ export const playersTable = sqliteTable('players', {
 
 export const scoresTable = sqliteTable('scores', {
   discordId: text('discord_id').notNull().references(() => playersTable.discordId),
-  gameNumber: integer('game_number').notNull().references(() => wordlesTable.gameNumber),
-  attempts: text('attempts').notNull(),
+  dayNumber: integer('day_number').notNull().references(() => horsesTable.dayNumber),
+  score: integer('score').notNull().default(1),
+  percentage: integer('percentage').notNull().default(1),
   isWin: integer('is_win').default(0),
   isTie: integer('is_tie').default(0),
 }, (table) => ({
-  pk: primaryKey({ columns: [table.discordId, table.gameNumber] })
+  pk: primaryKey({ columns: [table.discordId, table.dayNumber] })
 }));
 
 export const playerScoresRelations = relations(playersTable, ({ many }) => ({
@@ -31,18 +34,18 @@ export const scoresRelations = relations(scoresTable, ({ one }) => ({
     fields: [scoresTable.discordId],
     references: [playersTable.discordId]
   }),
-  wordle: one(wordlesTable, {
-    fields: [scoresTable.gameNumber],
-    references: [wordlesTable.gameNumber]
+  horse: one(horsesTable, {
+    fields: [scoresTable.dayNumber],
+    references: [horsesTable.dayNumber]
   })
 }));
 
-export const wordleRelations = relations(wordlesTable, ({ many }) => ({
+export const horseRelations = relations(horsesTable, ({ many }) => ({
   scores: many(scoresTable)
 }));
 
-export type InsertWordle = typeof wordlesTable.$inferInsert;
-export type SelectWordle = typeof wordlesTable.$inferSelect;
+export type Inserthorse = typeof horsesTable.$inferInsert;
+export type Selecthorse = typeof horsesTable.$inferSelect;
 
 export type InsertPlayer = typeof playersTable.$inferInsert;
 export type SelectPlayer = typeof playersTable.$inferSelect;

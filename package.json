@@ -4,14 +4,15 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "drizzle-kit": "^0.29.1"
+    "drizzle-kit": "^0.31.9"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@libsql/client": "^0.14.0",
-    "discord.js": "^14.16.3",
-    "drizzle-orm": "^0.37.0"
-  }
+    "@libsql/client": "^0.17.0",
+    "discord.js": "^14.25.1",
+    "drizzle-orm": "^0.45.1"
+  },
+  "private": true
 }
